@@ -8,10 +8,10 @@ new class extends Component
 };
 ?>
 
-<div x-data="{ isNotificationOpen: false }" class="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-red-500 selection:text-white">
+<div x-data="{ isNotificationOpen: false, isMobileMenuOpen: false, isMobileSearchOpen: false }" class="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-red-500 selection:text-white">
     <!-- Header/Navbar Group -->
     <header class="sticky top-0 z-50 w-full transition-all duration-300">
-        <!-- Top Utility Bar -->
+        <!-- Top Utility Bar (Hidden on Mobile) -->
         <div class="bg-gradient-to-r from-red-800 to-red-900 text-red-200 text-xs py-1.5 hidden sm:block">
             <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <div class="flex space-x-5">
@@ -25,65 +25,177 @@ new class extends Component
             </div>
         </div>
 
-        <!-- Main Navbar -->
+        <!-- Main Navbar (Sleek & Compact Height) -->
         <div class="bg-gradient-to-r from-red-700 to-red-900 shadow-md">
-            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-20 gap-8">
+            <div class="max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-12 sm:h-16 gap-2.5 sm:gap-6">
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center cursor-pointer hover:opacity-90 transition-opacity">
-                        <span class="text-3xl font-black tracking-tight text-white">Dan<span class="text-yellow-400">cell</span></span>
+                        <span class="text-xl sm:text-2xl font-black tracking-tight text-white">Dan<span class="text-yellow-400">cell</span></span>
                     </div>
 
-                    <!-- Prominent Search Bar (Center) -->
-                    <div class="flex-1 max-w-3xl hidden md:flex items-center group">
-                        <div class="relative w-full flex shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="ph-bold ph-magnifying-glass text-slate-400 text-xl group-focus-within:text-red-900 transition-colors"></i>
+                    <!-- Prominent Search Bar (Center Desktop) -->
+                    <div class="flex-1 max-w-2xl hidden md:flex items-center group">
+                        <div class="relative w-full flex shadow-2xs">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="ph-light ph-magnifying-glass text-slate-400 text-lg group-focus-within:text-red-900 transition-colors"></i>
                             </div>
-                            <input type="text" placeholder="Cari iPhone 15 Pro, Smartwatch, atau Aksesoris..." class="w-full pl-12 pr-32 py-3 bg-white border-transparent rounded-lg text-sm focus:ring-4 focus:ring-red-950/20 transition-all outline-none text-slate-800 placeholder-slate-400">
-                            <button class="absolute right-1 top-1 bottom-1 bg-red-950 hover:bg-slate-900 text-white px-6 rounded-md font-semibold text-sm transition-colors">
+                            <input type="text" placeholder="Cari iPhone 15 Pro, Smartwatch, atau Aksesoris..." class="w-full pl-10 pr-24 py-2 bg-white border-transparent rounded-lg text-xs focus:ring-3 focus:ring-red-950/20 transition-all outline-none text-slate-800 placeholder-slate-400">
+                            <button class="absolute right-1 top-1 bottom-1 bg-red-950 hover:bg-slate-900 text-white px-4 rounded-md font-bold text-xs transition-colors cursor-pointer">
                                 Cari
                             </button>
                         </div>
                     </div>
 
-                    <!-- Right Actions (Icons) -->
-                    <div class="flex items-center space-x-1 sm:space-x-3 flex-shrink-0">
-                        <!-- Notification -->
-                        <button @click="isNotificationOpen = true" class="relative p-2.5 text-red-100 hover:text-white hover:bg-red-800 rounded-lg transition-all">
-                            <i class="ph-bold ph-bell text-2xl"></i>
-                            <span class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-yellow-400 rounded-full border-2 border-red-900"></span>
-                        </button>
+                    <!-- Right Actions (Thin & Minimalist Icons) -->
+                    <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
                         
-                        <!-- Cart -->
-                        <button class="relative p-2.5 text-red-100 hover:text-white hover:bg-red-800 rounded-lg transition-all">
-                            <i class="ph-bold ph-shopping-cart text-2xl"></i>
-                            <span class="absolute top-0 right-0 w-5 h-5 bg-yellow-400 text-[10px] font-bold text-red-950 flex items-center justify-center rounded-full border-2 border-red-900 shadow-sm">2</span>
+                        <!-- Mobile Search Toggle Button -->
+                        <button 
+                            @click="isMobileSearchOpen = !isMobileSearchOpen" 
+                            class="md:hidden p-1.5 text-red-100 hover:text-white hover:bg-red-800 rounded-lg transition-all focus:outline-none"
+                            title="Cari Produk"
+                        >
+                            <i class="ph-light ph-magnifying-glass text-2xl"></i>
                         </button>
 
-                        <div class="h-8 w-px bg-red-800 mx-2 hidden sm:block"></div>
+                        <!-- Notification Dropdown Container (Desktop Only - Mobile accesses via Bottom Navigation Bar) -->
+                        <div class="relative hidden sm:block">
+                            <button @click="isNotificationOpen = !isNotificationOpen" class="relative p-1.5 sm:p-2 text-red-100 hover:text-white hover:bg-red-800 rounded-lg transition-all focus:outline-none cursor-pointer">
+                                <i class="ph-light ph-bell text-2xl"></i>
+                                <span class="absolute top-1 right-1.5 w-2 h-2 bg-yellow-400 rounded-full border border-red-900 shadow-sm animate-pulse"></span>
+                            </button>
+
+                            <!-- Notification Dropdown Menu -->
+                            <div 
+                                x-show="isNotificationOpen"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
+                                @click.outside="isNotificationOpen = false"
+                                class="absolute right-0 mt-3 w-80 sm:w-96 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50 origin-top-right text-slate-800"
+                                style="display: none;"
+                            >
+                                <!-- Dropdown Header -->
+                                <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <h3 class="font-extrabold text-slate-900 text-base">Notifikasi</h3>
+                                        <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">2 Baru</span>
+                                    </div>
+                                    <button class="text-xs font-semibold text-red-600 hover:text-red-700 hover:underline transition-colors cursor-pointer">
+                                        Tandai dibaca
+                                    </button>
+                                </div>
+
+                                <!-- Dropdown Notification List -->
+                                <div class="max-h-[360px] overflow-y-auto divide-y divide-slate-100 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-slate-300">
+                                    <!-- Unread 1 -->
+                                    <a href="#" class="flex items-start p-4 bg-red-50/40 hover:bg-red-50/80 transition-colors group relative">
+                                        <div class="h-10 w-10 rounded-xl bg-red-100 border border-red-200/60 text-red-600 flex items-center justify-center flex-shrink-0 mr-3.5 group-hover:scale-105 transition-transform">
+                                            <i class="ph-fill ph-ticket text-xl"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between mb-0.5">
+                                                <p class="text-xs font-bold text-slate-900 group-hover:text-red-700 transition-colors truncate">Cashback s/d 1 Juta! 💸</p>
+                                                <span class="w-2 h-2 rounded-full bg-red-600 flex-shrink-0 ml-2"></span>
+                                            </div>
+                                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">Promo gajian khusus buat kamu, tukar tambah sekarang sebelum kehabisan!</p>
+                                            <span class="text-[10px] text-red-500 font-medium mt-1.5 inline-block">Baru saja</span>
+                                        </div>
+                                    </a>
+
+                                    <!-- Unread 2 -->
+                                    <a href="#" class="flex items-start p-4 bg-blue-50/40 hover:bg-blue-50/80 transition-colors group relative">
+                                        <div class="h-10 w-10 rounded-xl bg-blue-100 border border-blue-200/60 text-blue-600 flex items-center justify-center flex-shrink-0 mr-3.5 group-hover:scale-105 transition-transform">
+                                            <i class="ph-fill ph-package text-xl"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between mb-0.5">
+                                                <p class="text-xs font-bold text-slate-900 group-hover:text-blue-700 transition-colors truncate">Pesanan Dikirim 🚚</p>
+                                                <span class="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 ml-2"></span>
+                                            </div>
+                                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">Hore! Pesanan iPhone 15 Pro Max kamu sedang dalam perjalanan ke alamatmu.</p>
+                                            <span class="text-[10px] text-blue-500 font-medium mt-1.5 inline-block">2 jam yang lalu</span>
+                                        </div>
+                                    </a>
+
+                                    <!-- Read 1 -->
+                                    <a href="#" class="flex items-start p-4 hover:bg-slate-50 transition-colors opacity-75 hover:opacity-100 group">
+                                        <div class="h-10 w-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center flex-shrink-0 mr-3.5 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+                                            <i class="ph-fill ph-check-circle text-xl"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs font-bold text-slate-800 group-hover:text-emerald-700 transition-colors truncate">Pembayaran Berhasil</p>
+                                            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">Pembayaran pesanan #INV-20260704 telah kami terima dan sedang diproses.</p>
+                                            <span class="text-[10px] text-slate-400 font-medium mt-1.5 inline-block">Kemarin, 14:30</span>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <!-- Dropdown Footer -->
+                                <a href="#" class="block py-3 px-4 text-center bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-700 hover:text-red-700 border-t border-slate-100 transition-colors flex items-center justify-center space-x-1">
+                                    <span>Lihat Semua Notifikasi</span>
+                                    <i class="ph-bold ph-caret-right text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
                         
-                        <!-- User Profile / Login -->
-                        <button class="hidden sm:flex items-center space-x-3 p-1.5 pr-4 rounded-xl border border-red-800 hover:border-red-700 hover:bg-red-800 transition-all bg-red-950/50">
-                            <img src="https://ui-avatars.com/api/?name=User&background=ffffff&color=7f1d1d" alt="User" class="w-8 h-8 rounded-lg border border-red-800">
+                        <!-- Cart -->
+                        <button class="relative p-1.5 sm:p-2 text-red-100 hover:text-white hover:bg-red-800 rounded-lg transition-all cursor-pointer">
+                            <i class="ph-light ph-shopping-bag text-xl sm:text-2xl"></i>
+                            <span class="absolute top-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-yellow-400 text-[9px] font-bold text-red-950 flex items-center justify-center rounded-full border border-red-900 shadow-xs">2</span>
+                        </button>
+
+                        <div class="h-6 w-px bg-red-800 mx-1.5 hidden sm:block"></div>
+                        
+                        <!-- User Profile / Login (Desktop) -->
+                        <button class="hidden sm:flex items-center space-x-2.5 p-1 pr-3 rounded-xl border border-red-800 hover:border-red-700 hover:bg-red-800 transition-all bg-red-950/50 cursor-pointer">
+                            <img src="https://ui-avatars.com/api/?name=User&background=ffffff&color=7f1d1d" alt="User" class="w-7 h-7 rounded-lg border border-red-800">
                             <div class="text-left">
-                                <p class="text-[10px] text-red-300 font-medium leading-none mb-0.5">Hello, User</p>
+                                <p class="text-[9px] text-red-300 font-medium leading-none mb-0.5">Hello, User</p>
                                 <p class="text-xs font-bold text-white leading-none">Akun Saya</p>
                             </div>
-                            <i class="ph-bold ph-caret-down text-red-300 text-xs ml-1"></i>
+                            <i class="ph-light ph-caret-down text-red-300 text-xs ml-1"></i>
                         </button>
+
                     </div>
                 </div>
             </div>
 
-            <!-- Sub-Navbar (Categories) -->
-            <div class="border-t border-red-800 bg-gradient-to-r from-red-700 to-red-900 hidden md:block">
+            <!-- Collapsible Mobile Search Input Row -->
+            <div 
+                x-show="isMobileSearchOpen" 
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                class="md:hidden px-4 pb-3 pt-2 bg-gradient-to-r from-red-800 to-red-950 border-t border-red-800/80"
+                style="display: none;"
+            >
+                <div class="relative w-full flex shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <i class="ph-bold ph-magnifying-glass text-slate-400 text-lg"></i>
+                    </div>
+                    <input type="text" placeholder="Cari iPhone, Smartwatch, Aksesoris..." class="w-full pl-10 pr-20 py-2.5 bg-white rounded-lg text-xs focus:ring-2 focus:ring-red-400 transition-all outline-none text-slate-800 placeholder-slate-400">
+                    <button class="absolute right-1 top-1 bottom-1 bg-red-950 text-white px-4 rounded-md font-bold text-xs">
+                        Cari
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sub-Navbar (Desktop Categories - Sleek Height) -->
+            <div class="border-t border-red-800/80 bg-gradient-to-r from-red-700 to-red-900 hidden md:block">
                 <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex space-x-8 h-12 items-center relative">
+                    <div class="flex space-x-6 h-10 items-center relative">
                         <!-- Mega Menu Wrapper -->
                         <div class="group h-full flex items-center">
-                            <button class="flex items-center space-x-2 text-sm font-bold text-white group-hover:text-yellow-400 transition-colors h-full">
-                                <i class="ph-bold ph-list text-lg"></i>
+                            <button class="flex items-center space-x-1.5 text-xs font-bold text-white group-hover:text-yellow-400 transition-colors h-full cursor-pointer">
+                                <i class="ph-bold ph-list text-base"></i>
                                 <span>Semua Kategori</span>
                             </button>
                             
@@ -149,323 +261,681 @@ new class extends Component
                 </div>
             </div>
         </div>
+
+        <!-- Full Mobile Slide-Over Drawer Menu (z-[70] to cover top header & bottom bar cleanly) -->
+        <div 
+            x-show="isMobileMenuOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-[70] md:hidden flex"
+            style="display: none;"
+        >
+            <!-- Overlay Backdrop -->
+            <div @click="isMobileMenuOpen = false" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
+
+            <!-- Drawer Content Container -->
+            <div 
+                x-show="isMobileMenuOpen"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="-translate-x-full"
+                x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="-translate-x-full"
+                class="relative w-4/5 max-w-sm bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto z-10"
+            >
+                <div>
+                    <!-- Drawer Header -->
+                    <div class="p-5 bg-gradient-to-r from-red-800 to-red-950 text-white flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://ui-avatars.com/api/?name=User&background=ffffff&color=7f1d1d" alt="User" class="w-10 h-10 rounded-xl border-2 border-red-500/50">
+                            <div>
+                                <p class="text-xs text-red-200 font-medium">Halo, Selamat Datang</p>
+                                <p class="text-sm font-extrabold">Akun Saya / Masuk</p>
+                            </div>
+                        </div>
+                        <button @click="isMobileMenuOpen = false" class="p-2 text-white/80 hover:text-white rounded-lg">
+                            <i class="ph-bold ph-x text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Trade-In Mobile Highlight Banner -->
+                    <div class="p-4 bg-yellow-400/90 m-4 rounded-xl border border-yellow-500 flex items-center justify-between shadow-xs">
+                        <div class="flex items-center space-x-2 text-red-950">
+                            <i class="ph-fill ph-swap text-xl"></i>
+                            <div>
+                                <p class="text-xs font-black">Program Trade-In</p>
+                                <p class="text-[10px] font-semibold text-red-900">Tukar Tambah HP Lama</p>
+                            </div>
+                        </div>
+                        <i class="ph-bold ph-caret-right text-red-950"></i>
+                    </div>
+
+                    <!-- Category Navigation Links -->
+                    <div class="px-4 py-2">
+                        <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider px-3 mb-2">Kategori Utama</p>
+                        <nav class="space-y-1">
+                            <a href="#" class="flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-800 font-extrabold hover:bg-red-50 hover:text-red-900 transition-colors">
+                                <i class="ph-bold ph-device-mobile text-red-600 text-xl"></i>
+                                <span>Smartphone & Tablet</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-800 font-extrabold hover:bg-red-50 hover:text-red-900 transition-colors">
+                                <i class="ph-bold ph-laptop text-red-600 text-xl"></i>
+                                <span>Laptop & PC</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-800 font-extrabold hover:bg-red-50 hover:text-red-900 transition-colors">
+                                <i class="ph-bold ph-headphones text-red-600 text-xl"></i>
+                                <span>Audio Premium</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-800 font-extrabold hover:bg-red-50 hover:text-red-900 transition-colors">
+                                <i class="ph-bold ph-watch text-red-600 text-xl"></i>
+                                <span>Smartwatch & Fitness</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-800 font-extrabold hover:bg-red-50 hover:text-red-900 transition-colors">
+                                <i class="ph-bold ph-plugs text-red-600 text-xl"></i>
+                                <span>Aksesoris Original</span>
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Secondary Menu Links -->
+                    <div class="px-4 py-2 border-t border-slate-100 mt-2">
+                        <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider px-3 mb-2">Layanan & Bantuan</p>
+                        <nav class="space-y-1 text-sm font-semibold text-slate-600">
+                            <a href="#" class="flex items-center justify-between px-3 py-2.5 hover:text-red-900">
+                                <span>Cabang Terdekat</span>
+                                <i class="ph-bold ph-storefront text-slate-400"></i>
+                            </a>
+                            <a href="#" class="flex items-center justify-between px-3 py-2.5 hover:text-red-900">
+                                <span>Lacak Pesanan</span>
+                                <i class="ph-bold ph-truck text-slate-400"></i>
+                            </a>
+                            <a href="#" class="flex items-center justify-between px-3 py-2.5 hover:text-red-900">
+                                <span>Pusat Bantuan</span>
+                                <i class="ph-bold ph-question text-slate-400"></i>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Drawer Footer -->
+                <div class="p-4 bg-slate-50 border-t border-slate-100 text-center text-xs text-slate-400 font-medium">
+                    &copy; 2026 Dancell Official Store
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- Hero Slider -->
-    <div 
-        x-data="{ 
-            activeSlide: 0,
-            slides: [
-                { id: 1, title: 'iPhone 15 Pro Max', subtitle: 'Titanium. So strong. So light. So Pro.', image: '/images/slider-1.png', color: 'from-slate-50 to-white', price: 'Rp 22.999.000', originalPrice: 'Rp 24.999.000', rating: '4.9', reviews: '2.5k', specs: ['Titanium Frame', 'A17 Pro Chip', '48MP Camera'] },
-                { id: 2, title: 'Sony WH-1000XM5', subtitle: 'Your world. Nothing else. Industry-leading noise cancellation.', image: '/images/slider-2.png', color: 'from-red-50 to-white', price: 'Rp 5.999.000', originalPrice: 'Rp 6.499.000', rating: '4.8', reviews: '1.1k', specs: ['Hi-Res Audio', '30 Hours Battery', 'Multipoint'] },
-                { id: 3, title: 'Apple Watch Ultra 2', subtitle: 'Next level adventure. Now in striking red.', image: '/images/slider-3.png', color: 'from-slate-100 to-white', price: 'Rp 13.999.000', originalPrice: 'Rp 15.999.000', rating: '5.0', reviews: '942', specs: ['S9 SiP', 'Titanium Case', '100m Water Resistant'] }
-            ],
-            interval: null,
-            isDragging: false,
-            startX: 0,
-            dragThreshold: 50,
-            init() {
-                this.startAutoPlay();
-                this.animateCurrentSlide();
-            },
-            startAutoPlay() {
-                this.interval = setInterval(() => { this.next() }, 6000);
-            },
-            stopAutoPlay() {
-                clearInterval(this.interval);
-            },
-            next() {
-                this.activeSlide = (this.activeSlide === this.slides.length - 1) ? 0 : this.activeSlide + 1;
-                this.animateCurrentSlide();
-            },
-            prev() {
-                this.activeSlide = (this.activeSlide === 0) ? this.slides.length - 1 : this.activeSlide - 1;
-                this.animateCurrentSlide();
-            },
-            setSlide(index) {
-                this.activeSlide = index;
-                this.animateCurrentSlide();
-                this.stopAutoPlay();
-                this.startAutoPlay();
-            },
-            animateCurrentSlide() {
-                // Handled natively by x-transition
-            },
-            startDrag(e) {
-                this.isDragging = true;
-                this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-                this.stopAutoPlay();
-            },
-            endDrag(e) {
-                if(!this.isDragging) return;
-                this.isDragging = false;
-                const endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX;
-                const diff = this.startX - endX;
-                
-                if (diff > this.dragThreshold) {
-                    this.next();
-                } else if (diff < -this.dragThreshold) {
-                    this.prev();
+    <!-- Ultra-Modern Framed Flagship Hero Stage -->
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+        
+        <!-- Hero Slider Stage Box -->
+        <div 
+            x-data="{ 
+                activeSlide: 0,
+                slides: [
+                    { id: 1, title: 'iPhone 15 Pro Max', subtitle: 'Titanium kedirgantaraan. Chip A17 Pro terdepan. Sistem kamera 48MP Pro paling canggih.', image: '/images/slider-1.png', bgText: 'PRO MAX', price: 'Rp 22.999.000', originalPrice: 'Rp 24.999.000', rating: '4.9', reviews: '2.5k', specs: ['Titanium Frame', 'A17 Pro Chip', '48MP Camera'] },
+                    { id: 2, title: 'Sony WH-1000XM5', subtitle: 'Peredam bising terbaik di industri. Kualitas audio Hi-Res definitif dengan baterai 30 jam.', image: '/images/slider-2.png', bgText: 'SONY ANC', price: 'Rp 5.999.000', originalPrice: 'Rp 6.499.000', rating: '4.8', reviews: '1.1k', specs: ['Hi-Res Audio', '30 Jam Baterai', 'Custom ANC Engine'] },
+                    { id: 3, title: 'Apple Watch Ultra 2', subtitle: 'Casing Titanium 49mm paling tangguh dengan layar Retina 3000 nits paling terang.', image: '/images/slider-3.png', bgText: 'ULTRA 2', price: 'Rp 13.999.000', originalPrice: 'Rp 15.999.000', rating: '5.0', reviews: '942', specs: ['S9 SiP Chip', 'Titanium Case 49mm', '100m Water Resistant'] }
+                ],
+                interval: null,
+                isDragging: false,
+                startX: 0,
+                dragThreshold: 50,
+                init() {
+                    this.startAutoPlay();
+                },
+                startAutoPlay() {
+                    this.interval = setInterval(() => { this.next() }, 6500);
+                },
+                stopAutoPlay() {
+                    clearInterval(this.interval);
+                },
+                next() {
+                    this.activeSlide = (this.activeSlide === this.slides.length - 1) ? 0 : this.activeSlide + 1;
+                },
+                prev() {
+                    this.activeSlide = (this.activeSlide === 0) ? this.slides.length - 1 : this.activeSlide - 1;
+                },
+                setSlide(index) {
+                    this.activeSlide = index;
+                    this.stopAutoPlay();
+                    this.startAutoPlay();
+                },
+                startDrag(e) {
+                    this.isDragging = true;
+                    this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+                    this.stopAutoPlay();
+                },
+                endDrag(e) {
+                    if(!this.isDragging) return;
+                    this.isDragging = false;
+                    const endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX;
+                    const diff = this.startX - endX;
+                    
+                    if (diff > this.dragThreshold) {
+                        this.next();
+                    } else if (diff < -this.dragThreshold) {
+                        this.prev();
+                    }
+                    this.startAutoPlay();
                 }
-                this.startAutoPlay();
-            }
-        }"
-        class="relative w-full h-[600px] md:h-[700px] overflow-hidden bg-white cursor-grab active:cursor-grabbing select-none"
-        @mousedown="startDrag"
-        @mouseup="endDrag"
-        @mouseleave="endDrag"
-        @touchstart="startDrag"
-        @touchend="endDrag"
-    >
-        <!-- Slides -->
-        <template x-for="(slide, index) in slides" :key="slide.id">
-            <div 
-                x-show="activeSlide === index"
-                x-transition:enter="transition ease-out duration-500"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-300 absolute inset-0"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="absolute inset-0 w-full h-full"
-                :class="'bg-gradient-to-br ' + slide.color"
-            >
-                <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
-                        <!-- Text Content -->
-                        <div class="slide-content z-10 mt-12 md:mt-0 select-none">
-                            <div class="flex items-center space-x-3 mb-5">
-                                <span class="inline-block py-1.5 px-4 rounded-md bg-red-900 text-white text-xs font-bold tracking-widest uppercase shadow-sm">
-                                    <span x-text="slide.id === 1 ? '🔥 Flash Sale' : 'New Arrival'"></span>
-                                </span>
-                                <div class="flex items-center space-x-1 text-sm font-semibold text-slate-700">
-                                    <i class="ph-fill ph-star text-yellow-500 text-base"></i>
+            }"
+            class="relative w-full rounded-2xl md:rounded-[2.5rem] bg-gradient-to-b from-white via-slate-50/90 to-slate-100/70 border border-slate-200/80 shadow-xs sm:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.06)] overflow-hidden min-h-[420px] sm:min-h-[580px] lg:min-h-[620px] flex flex-col justify-between cursor-grab active:cursor-grabbing select-none"
+            @mousedown="startDrag"
+            @mouseup="endDrag"
+            @mouseleave="endDrag"
+            @touchstart="startDrag"
+            @touchend="endDrag"
+        >
+            <!-- Rich Tech Grid Pattern Background -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] [background-size:32px_32px] opacity-45 pointer-events-none z-0"></div>
+
+            <!-- Soft Radial Glow Effect -->
+            <div class="absolute -top-24 -right-24 w-[32rem] h-[32rem] bg-gradient-to-br from-red-500/10 via-red-200/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-[32rem] h-[32rem] bg-gradient-to-tr from-red-500/5 via-slate-200/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Stage Top Bar (Official Store Tag + Slide Controls) -->
+            <div class="relative z-20 px-3 sm:px-10 pt-3 sm:pt-8 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 sm:px-3.5 sm:py-1.5 rounded-full bg-red-900/10 border border-red-900/20 text-red-900 font-extrabold text-[9px] sm:text-xs uppercase tracking-wider">
+                        <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 animate-ping"></span>
+                        <span>Official Flagship</span>
+                    </span>
+                </div>
+
+                <!-- Clean Slide Switcher Pills (Desktop Only) -->
+                <div class="hidden sm:flex items-center space-x-1 bg-white/90 backdrop-blur-md p-1 rounded-2xl border border-slate-200/80 shadow-xs">
+                    <template x-for="(slide, index) in slides" :key="slide.id">
+                        <button 
+                            @click="setSlide(index)"
+                            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center space-x-1.5 cursor-pointer"
+                            :class="activeSlide === index ? 'bg-red-900 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900'"
+                        >
+                            <span x-text="'0' + (index + 1)"></span>
+                            <span x-show="activeSlide === index" x-text="slide.title.split(' ')[0]" class="hidden md:inline font-semibold"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Slides Showcase -->
+            <template x-for="(slide, index) in slides" :key="slide.id">
+                <div 
+                    x-show="activeSlide === index"
+                    x-transition:enter="transition ease-out duration-600"
+                    x-transition:enter-start="opacity-0 translate-y-3"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-250 absolute inset-0"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="absolute inset-0 w-full h-full px-3 sm:px-10 lg:px-12 pt-8 sm:pt-16 pb-8 flex items-center overflow-y-auto"
+                >
+                    <!-- Background Infinite Marquee Text -->
+                    <div class="absolute bottom-4 inset-x-0 overflow-hidden pointer-events-none select-none z-0">
+                        <div class="animate-marquee whitespace-nowrap text-slate-900/[0.04] font-black text-3xl sm:text-8xl md:text-[9rem] tracking-tight uppercase leading-none">
+                            <span class="mr-12" x-text="slide.title + ' • DANCELL OFFICIAL STORE • GARANSI RESMI 100% • BEST PRICE • '"></span>
+                            <span class="mr-12" x-text="slide.title + ' • DANCELL OFFICIAL STORE • GARANSI RESMI 100% • BEST PRICE • '"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:grid md:grid-cols-12 gap-2.5 sm:gap-6 lg:gap-12 items-center w-full relative z-10 py-1 sm:py-0">
+                        
+                        <!-- Top Image Showcase on Mobile (Order First on Mobile, Order Last on Desktop) -->
+                        <div class="w-full md:col-span-5 flex justify-center items-center order-first md:order-last">
+                            
+                            <!-- Sleek Product Card Box -->
+                            <div class="relative bg-white/90 backdrop-blur-md rounded-xl sm:rounded-3xl p-1.5 sm:p-4 border border-slate-200/90 shadow-2xs sm:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] w-full max-w-[165px] sm:max-w-xs md:max-w-md group">
+                                
+                                <!-- Product Image Container -->
+                                <div class="relative rounded-lg sm:rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center min-h-[110px] sm:min-h-[260px] md:min-h-[360px]">
+                                    <img 
+                                        :src="slide.image" 
+                                        :alt="slide.title" 
+                                        draggable="false" 
+                                        class="w-full max-h-[120px] sm:max-h-[280px] md:max-h-[400px] object-cover rounded-lg sm:rounded-2xl group-hover:scale-105 transition-transform duration-700"
+                                    >
+                                </div>
+
+                                <!-- Floating Glass Badge 1 (Desktop Only) -->
+                                <div class="hidden sm:flex absolute -top-3 -right-3 bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 text-slate-800 items-center space-x-3 shadow-lg z-20">
+                                    <div class="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+                                        <i class="ph-bold ph-shield-check text-lg"></i>
+                                    </div>
+                                    <div class="text-left pr-1">
+                                        <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Garansi</p>
+                                        <p class="text-xs font-extrabold text-slate-900">100% Original</p>
+                                    </div>
+                                </div>
+
+                                <!-- Floating Glass Badge 2 (Desktop Only) -->
+                                <div class="hidden sm:flex absolute -bottom-3 -left-3 bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 text-slate-800 items-center space-x-3 shadow-lg z-20">
+                                    <div class="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+                                        <i class="ph-bold ph-truck text-lg"></i>
+                                    </div>
+                                    <div class="text-left pr-1">
+                                        <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Express</p>
+                                        <p class="text-xs font-extrabold text-slate-900">Bebas Ongkir</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Text Content Below Image on Mobile (Order Last on Mobile, Order First on Desktop) -->
+                        <div class="w-full md:col-span-7 select-none text-left order-last md:order-first">
+                            <!-- Category Badge & Rating -->
+                            <div class="flex items-center space-x-1.5 mb-1.5 sm:mb-4">
+                                <span class="px-2 py-0.5 sm:px-3.5 sm:py-1 rounded-md sm:rounded-lg bg-red-900 text-white text-[9px] sm:text-xs font-extrabold uppercase tracking-wider shadow-xs" x-text="slide.id === 1 ? '🔥 Flash Sale' : 'New Arrival'"></span>
+                                <div class="flex items-center space-x-1 text-[10px] sm:text-xs font-bold text-slate-700 bg-white/90 backdrop-blur-md px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg border border-slate-200/80 shadow-xs">
+                                    <i class="ph-fill ph-star text-amber-500 text-[10px] sm:text-sm"></i>
                                     <span x-text="slide.rating"></span>
-                                    <span class="text-slate-400 font-normal" x-text="'(' + slide.reviews + ' Reviews)'"></span>
+                                    <span class="text-slate-400 font-normal" x-text="'(' + slide.reviews + ')'"></span>
                                 </div>
                             </div>
 
-                            <h1 x-text="slide.title" class="text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.05] mb-4 drop-shadow-sm"></h1>
-                            <p x-text="slide.subtitle" class="text-lg md:text-xl text-slate-600 mb-6 max-w-xl leading-relaxed font-medium"></p>
-                            
-                            <!-- Specs / Features -->
-                            <div class="flex flex-wrap gap-2 mb-8">
+                            <!-- Main Title & Subtitle -->
+                            <h1 x-text="slide.title" class="text-xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.1] mb-1 sm:mb-3"></h1>
+                            <p x-text="slide.subtitle" class="text-[11px] sm:text-base lg:text-lg text-slate-600 max-w-xl font-normal leading-snug sm:leading-relaxed mb-2 sm:mb-6 line-clamp-2 sm:line-clamp-none"></p>
+
+                            <!-- Specs Pills (Desktop Only) -->
+                            <div class="hidden sm:flex flex-wrap gap-2 mb-7">
                                 <template x-for="spec in slide.specs">
-                                    <span class="flex items-center px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg">
-                                        <i class="ph-bold ph-check-circle text-green-500 mr-1.5 text-sm"></i>
+                                    <span class="flex items-center px-3.5 py-1.5 bg-white border border-slate-200/90 text-slate-700 text-xs font-semibold rounded-xl shadow-xs">
+                                        <i class="ph-bold ph-check-circle text-red-600 mr-1.5 text-sm"></i>
                                         <span x-text="spec"></span>
                                     </span>
                                 </template>
                             </div>
 
                             <!-- Pricing -->
-                            <div class="mb-8 flex items-end space-x-4">
-                                <span class="text-3xl md:text-4xl font-extrabold text-red-900" x-text="slide.price"></span>
-                                <span class="text-lg text-slate-400 line-through font-medium mb-1" x-text="slide.originalPrice"></span>
+                            <div class="flex items-baseline space-x-1.5 sm:space-x-3 mb-2.5 sm:mb-7">
+                                <span class="text-lg sm:text-4xl lg:text-5xl font-black text-red-900 tracking-tight" x-text="slide.price"></span>
+                                <span class="text-[10px] sm:text-sm text-slate-400 line-through font-medium" x-text="slide.originalPrice"></span>
+                                <span class="bg-red-50 text-red-700 border border-red-100 text-[8px] sm:text-xs font-bold px-1.5 py-0.5 rounded">Hemat 2 Juta</span>
                             </div>
-                            
-                            <div class="flex flex-wrap gap-4 select-none">
-                                <button class="px-8 py-4 bg-red-900 hover:bg-red-950 text-white rounded-lg font-bold shadow-xl shadow-red-900/30 transition-all hover:-translate-y-1 flex items-center group">
-                                    <i class="ph-bold ph-shopping-bag mr-2 text-xl"></i>
-                                    Beli Sekarang
+
+                            <!-- CTA Buttons -->
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <button class="w-full sm:w-auto px-4 sm:px-8 py-2 sm:py-4 bg-gradient-to-r from-red-800 to-red-950 hover:from-red-900 hover:to-black text-white font-extrabold rounded-lg sm:rounded-2xl shadow-md shadow-red-950/20 hover:-translate-y-0.5 transition-all flex items-center justify-center group text-xs sm:text-sm cursor-pointer">
+                                    <i class="ph-bold ph-shopping-bag text-xs sm:text-lg mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform"></i>
+                                    <span>Beli Sekarang</span>
                                 </button>
-                                <button class="px-8 py-4 bg-white text-slate-700 hover:text-red-900 rounded-lg font-bold border border-slate-200 hover:border-red-900 transition-all shadow-sm">
-                                    Lihat Detail
+                                <button class="hidden sm:flex px-7 py-4 bg-white hover:bg-slate-50 text-slate-700 hover:text-red-900 font-bold rounded-2xl border border-slate-200 shadow-xs transition-all items-center justify-center text-sm cursor-pointer">
+                                    <span>Detail</span>
+                                    <i class="ph-bold ph-arrow-right text-xs ml-1"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Image Content -->
-                        <div class="relative h-full flex justify-center items-center pointer-events-none select-none">
-                            <!-- Decorative blur blob -->
-                            <div class="absolute w-72 h-72 md:w-[28rem] md:h-[28rem] bg-red-400/10 rounded-full blur-3xl filter mix-blend-multiply"></div>
-                            
-                            <img :src="slide.image" :alt="slide.title" draggable="false" class="slide-img relative z-10 max-h-[350px] md:max-h-[550px] w-auto drop-shadow-2xl object-contain hover:scale-105 transition-transform duration-700">
-                        </div>
                     </div>
                 </div>
+            </template>
+
+            <!-- Bottom Progress Indicators & Arrows -->
+            <div class="relative z-20 px-3 sm:px-10 pb-3 sm:pb-6 flex items-center justify-between">
+                <div class="flex items-center space-x-1.5">
+                    <template x-for="(slide, index) in slides" :key="slide.id">
+                        <button 
+                            @click="setSlide(index)"
+                            class="h-1.5 sm:h-2 rounded-full transition-all duration-300 cursor-pointer"
+                            :class="activeSlide === index ? 'bg-red-900 w-6 sm:w-10' : 'bg-slate-300 w-1.5 sm:w-2 hover:bg-slate-400'"
+                        ></button>
+                    </template>
+                </div>
+                <div class="flex items-center space-x-1.5">
+                    <button @click="prev()" class="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-red-900 hover:border-red-900 flex items-center justify-center transition-colors shadow-2xs cursor-pointer">
+                        <i class="ph-bold ph-caret-left text-[10px] sm:text-sm"></i>
+                    </button>
+                    <button @click="next()" class="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-red-900 hover:border-red-900 flex items-center justify-center transition-colors shadow-2xs cursor-pointer">
+                        <i class="ph-bold ph-caret-right text-[10px] sm:text-sm"></i>
+                    </button>
+                </div>
             </div>
-        </template>
-        
-        <!-- Indicators -->
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
-            <template x-for="(slide, index) in slides" :key="slide.id">
+        </div>
+
+        <!-- Clean 4-Column Feature Trust Bar (Below Hero Stage - 2x2 Grid on Mobile) -->
+        <div class="mt-3 sm:mt-6 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+            <div class="bg-white rounded-lg sm:rounded-2xl p-2 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex items-center space-x-2 sm:space-x-3.5">
+                <div class="w-7 h-7 sm:w-11 sm:h-11 rounded-md sm:rounded-xl bg-red-50 text-red-600 border border-red-100 flex items-center justify-center flex-shrink-0">
+                    <i class="ph-bold ph-shield-check text-xs sm:text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-[11px] sm:text-sm font-bold text-slate-900 leading-tight">Garansi 100%</h4>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium hidden sm:block mt-0.5">Jaminan original</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg sm:rounded-2xl p-2 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex items-center space-x-2 sm:space-x-3.5">
+                <div class="w-7 h-7 sm:w-11 sm:h-11 rounded-md sm:rounded-xl bg-red-50 text-red-600 border border-red-100 flex items-center justify-center flex-shrink-0">
+                    <i class="ph-bold ph-truck text-xs sm:text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-[11px] sm:text-sm font-bold text-slate-900 leading-tight">Gratis Ongkir</h4>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium hidden sm:block mt-0.5">Se-Indonesia</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg sm:rounded-2xl p-2 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex items-center space-x-2 sm:space-x-3.5">
+                <div class="w-7 h-7 sm:w-11 sm:h-11 rounded-md sm:rounded-xl bg-red-50 text-red-600 border border-red-100 flex items-center justify-center flex-shrink-0">
+                    <i class="ph-bold ph-arrows-counter-clockwise text-xs sm:text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-[11px] sm:text-sm font-bold text-slate-900 leading-tight">Trade-In</h4>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium hidden sm:block mt-0.5">Cashback s/d 2 Juta</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg sm:rounded-2xl p-2 sm:p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex items-center space-x-2 sm:space-x-3.5">
+                <div class="w-7 h-7 sm:w-11 sm:h-11 rounded-md sm:rounded-xl bg-red-50 text-red-600 border border-red-100 flex items-center justify-center flex-shrink-0">
+                    <i class="ph-bold ph-credit-card text-xs sm:text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-[11px] sm:text-sm font-bold text-slate-900 leading-tight">Cicilan 0%</h4>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium hidden sm:block mt-0.5">Mitra bank resmi</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- Pure Component: Category Drag Carousel with Atmospheric Dark Cards & Pagination -->
+    <section 
+        x-data="{ 
+            isDragging: false,
+            startX: 0,
+            scrollLeft: 0,
+            activePageIndex: 0,
+            totalPages: 3,
+            startDrag(e) {
+                this.isDragging = true;
+                this.startX = (e.pageX || e.touches[0].pageX) - this.$refs.slider.offsetLeft;
+                this.scrollLeft = this.$refs.slider.scrollLeft;
+            },
+            stopDrag() {
+                this.isDragging = false;
+            },
+            drag(e) {
+                if(!this.isDragging) return;
+                e.preventDefault();
+                const x = (e.pageX || e.touches[0].pageX) - this.$refs.slider.offsetLeft;
+                const walk = (x - this.startX) * 1.5;
+                this.$refs.slider.scrollLeft = this.scrollLeft - walk;
+                this.updateActivePage();
+            },
+            onScroll() {
+                this.updateActivePage();
+            },
+            updateActivePage() {
+                const el = this.$refs.slider;
+                const maxScroll = el.scrollWidth - el.clientWidth;
+                if (maxScroll <= 0) {
+                    this.activePageIndex = 0;
+                    return;
+                }
+                const progress = el.scrollLeft / maxScroll;
+                this.activePageIndex = Math.min(this.totalPages - 1, Math.floor(progress * this.totalPages + 0.3));
+            },
+            goToPage(page) {
+                const el = this.$refs.slider;
+                const maxScroll = el.scrollWidth - el.clientWidth;
+                const targetScroll = (page / (this.totalPages - 1)) * maxScroll;
+                el.scrollTo({ left: targetScroll, behavior: 'smooth' });
+                this.activePageIndex = page;
+            }
+        }"
+        class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 pb-20 md:pb-6 relative"
+    >
+        <!-- Header: Title + Top-Right Link -->
+        <div class="flex items-center justify-between mb-3 sm:mb-5">
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600"></span>
+                <h2 class="text-[11px] sm:text-base font-extrabold uppercase tracking-wider text-slate-400">Kategori Pilihan Dancell</h2>
+            </div>
+            <a href="#" class="inline-flex items-center text-[11px] sm:text-sm font-extrabold text-red-900 hover:text-red-700 transition-colors group">
+                <span>Lihat Semua</span>
+                <i class="ph-bold ph-arrow-right ml-1 sm:ml-1.5 text-xs group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+
+        <!-- Grab & Scroll Horizontal Category Carousel with Atmospheric Dark Cards (Compact on Mobile) -->
+        <div 
+            x-ref="slider"
+            @scroll="onScroll"
+            @mousedown="startDrag"
+            @mouseleave="stopDrag"
+            @mouseup="stopDrag"
+            @mousemove="drag"
+            @touchstart="startDrag"
+            @touchend="stopDrag"
+            @touchmove="drag"
+            class="flex space-x-2.5 sm:space-x-5 overflow-x-auto pb-3 pt-1 px-1 scrollbar-none cursor-grab active:cursor-grabbing select-none scroll-smooth"
+        >
+            
+            <!-- Card 1: Smartphone -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600&auto=format&fit=crop" alt="Smartphone" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-device-mobile"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Smartphone</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">120+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 2: Laptop & PC -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop" alt="Laptop & PC" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-laptop"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Laptop & PC</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">85+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 3: Audio Premium -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600&auto=format&fit=crop" alt="Audio Premium" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-headphones"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Audio Premium</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">64+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 4: Smartwatch -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?q=80&w=600&auto=format&fit=crop" alt="Smartwatch" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-watch"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Smartwatch</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">42+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 5: Tablet & iPad -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=600&auto=format&fit=crop" alt="Tablet & iPad" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-device-tablet"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Tablet & iPad</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">48+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 6: Kamera & Drone -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop" alt="Kamera & Drone" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-camera"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Kamera & Drone</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">35+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 7: Aksesoris Original -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?q=80&w=600&auto=format&fit=crop" alt="Aksesoris Original" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-plugs"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Aksesoris Original</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">150+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 8: Gaming Gear -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop" alt="Gaming Gear" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-game-controller"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Gaming Gear</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">30+ Produk</p>
+                </div>
+            </a>
+
+            <!-- Card 9: Smart Home & IoT -->
+            <a href="#" class="h-32 sm:h-52 min-w-[130px] sm:min-w-[240px] rounded-lg sm:rounded-2xl overflow-hidden relative group cursor-pointer border border-slate-800/80 shadow-md hover:shadow-2xl hover:border-red-500/50 transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between p-3 sm:p-5 flex-shrink-0 bg-slate-950">
+                <img src="https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=600&auto=format&fit=crop" alt="Smart Home & IoT" class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20"></div>
+
+                <div class="relative z-10 flex items-start justify-between">
+                    <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center text-xs sm:text-xl group-hover:bg-red-900 group-hover:border-red-700 transition-all duration-300 shadow-lg">
+                        <i class="ph-bold ph-house-line"></i>
+                    </div>
+                    <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 flex items-center justify-center text-[9px] sm:text-xs group-hover:text-white group-hover:bg-red-900 transition-all">
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="relative z-10">
+                    <h3 class="text-xs sm:text-lg font-extrabold text-white tracking-tight group-hover:text-red-400 transition-colors">Smart Home & IoT</h3>
+                    <p class="text-[9px] sm:text-xs font-semibold text-slate-300/90 mt-0.5">55+ Produk</p>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- Pagination Bar Below Carousel -->
+        <div class="flex items-center justify-center space-x-1.5 mt-3">
+            <template x-for="(page, index) in totalPages" :key="index">
                 <button 
-                    @click="setSlide(index)"
-                    class="w-3 h-3 rounded-full transition-all duration-300 shadow-sm border border-black/10"
-                    :class="activeSlide === index ? 'bg-red-900 w-8' : 'bg-slate-300 hover:bg-red-400'"
+                    @click="goToPage(index)" 
+                    :class="activePageIndex === index ? 'w-6 bg-red-900' : 'w-2 bg-slate-200 hover:bg-slate-300'" 
+                    class="h-2 rounded-full transition-all duration-300 cursor-pointer"
+                    :title="'Halaman ' + (index + 1)"
                 ></button>
             </template>
         </div>
-    </div>
-    
-    <!-- Rest of the e-commerce structure placeholder -->
-    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 class="text-2xl font-bold text-slate-900 mb-8">Kategori Populer</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="h-40 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center hover:border-red-200 hover:shadow-md cursor-pointer transition-all hover:-translate-y-1">
-                 <div class="w-16 h-16 bg-red-50 rounded-xl flex items-center justify-center mb-3">
-                     <i class="ph-duotone ph-device-mobile text-4xl text-red-600"></i>
-                 </div>
-                 <span class="font-semibold text-slate-700">Smartphone</span>
+    </section>
+
+    <!-- Clean & Elegant Fixed Mobile Bottom Navigation Bar -->
+    <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 z-50 flex items-center justify-around py-1.5 px-1 shadow-[0_-5px_20px_rgba(0,0,0,0.06)] md:hidden">
+        <a href="#" class="flex flex-col items-center justify-center text-red-900 font-extrabold text-[9px] py-1 px-2.5 rounded-lg bg-red-50">
+            <i class="ph-light ph-house text-xl mb-0.5"></i>
+            <span>Beranda</span>
+        </a>
+        <button @click="isMobileMenuOpen = true" class="flex flex-col items-center justify-center text-slate-500 hover:text-red-900 font-semibold text-[9px] py-1 px-2.5 rounded-lg transition-colors cursor-pointer">
+            <i class="ph-light ph-squares-four text-xl mb-0.5"></i>
+            <span>Kategori</span>
+        </button>
+        <a href="#" class="flex flex-col items-center justify-center text-slate-500 hover:text-red-900 font-semibold text-[9px] py-1 px-2.5 rounded-lg transition-colors">
+            <div class="w-6 h-6 rounded-full bg-yellow-400 text-red-950 flex items-center justify-center shadow-xs -mt-1 mb-0.5">
+                <i class="ph-light ph-arrows-counter-clockwise text-xs font-bold"></i>
             </div>
-            <!-- More categories... -->
-            <div class="h-40 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center hover:border-red-200 hover:shadow-md cursor-pointer transition-all hover:-translate-y-1">
-                 <div class="w-16 h-16 bg-red-50 rounded-xl flex items-center justify-center mb-3">
-                     <i class="ph-duotone ph-headphones text-4xl text-red-600"></i>
-                 </div>
-                 <span class="font-semibold text-slate-700">Audio</span>
-            </div>
-            <div class="h-40 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center hover:border-red-200 hover:shadow-md cursor-pointer transition-all hover:-translate-y-1">
-                 <div class="w-16 h-16 bg-red-50 rounded-xl flex items-center justify-center mb-3">
-                     <i class="ph-duotone ph-watch text-4xl text-red-600"></i>
-                 </div>
-                 <span class="font-semibold text-slate-700">Wearables</span>
-            </div>
-            <div class="h-40 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center hover:border-red-200 hover:shadow-md cursor-pointer transition-all hover:-translate-y-1">
-                 <div class="w-16 h-16 bg-red-50 rounded-xl flex items-center justify-center mb-3">
-                     <i class="ph-duotone ph-plugs text-4xl text-red-600"></i>
-                 </div>
-                 <span class="font-semibold text-slate-700">Accessories</span>
-            </div>
-        </div>
+            <span>Trade-In</span>
+        </a>
+        <button @click="isNotificationOpen = !isNotificationOpen" class="flex flex-col items-center justify-center text-slate-500 hover:text-red-900 font-semibold text-[9px] py-1 px-2.5 rounded-lg transition-colors cursor-pointer relative">
+            <i class="ph-light ph-bell text-xl mb-0.5"></i>
+            <span class="absolute top-1 right-2.5 w-1.5 h-1.5 bg-yellow-400 rounded-full border border-white"></span>
+            <span>Notifikasi</span>
+        </button>
+        <button @click="isMobileMenuOpen = true" class="flex flex-col items-center justify-center text-slate-500 hover:text-red-900 font-semibold text-[9px] py-1 px-2.5 rounded-lg transition-colors cursor-pointer">
+            <i class="ph-light ph-user text-xl mb-0.5"></i>
+            <span>Akun</span>
+        </button>
     </div>
 
-    <!-- Notification Sidebar Overlay & Panel -->
-    <div x-show="isNotificationOpen" class="relative z-[100]" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" style="display: none;">
-        <!-- Background backdrop -->
-        <div 
-            x-show="isNotificationOpen"
-            x-transition:enter="ease-in-out duration-500"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="ease-in-out duration-500"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm transition-opacity"
-            @click="isNotificationOpen = false"
-        ></div>
-
-        <div class="fixed inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute inset-0 overflow-hidden">
-                <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-                    <!-- Slide-over panel -->
-                    <div 
-                        x-show="isNotificationOpen"
-                        x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
-                        x-transition:enter-start="translate-x-full"
-                        x-transition:enter-end="translate-x-0"
-                        x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
-                        x-transition:leave-start="translate-x-0"
-                        x-transition:leave-end="translate-x-full"
-                        class="pointer-events-auto w-screen max-w-md"
-                        @click.outside="isNotificationOpen = false"
-                    >
-                        <!-- Ultra-premium frosted glass sidebar with custom slim scrollbar -->
-                        <div class="flex h-full flex-col overflow-y-scroll bg-white/60 backdrop-blur-3xl shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.1)] border-l border-white/80 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-300/50 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-slate-400/80">
-                            
-                            <!-- Sidebar Header (Glassy) -->
-                            <div class="px-6 py-6 border-b border-white/60 flex items-center justify-between sticky top-0 z-20 bg-white/40 backdrop-blur-2xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)]">
-                                <div class="flex items-center space-x-3">
-                                    <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-700 shadow-lg shadow-red-500/20 ring-1 ring-white/50">
-                                        <i class="ph-bold ph-bell-ringing text-white text-xl"></i>
-                                    </div>
-                                    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600" id="slide-over-title">
-                                        Notifikasi
-                                    </h2>
-                                    <span class="bg-red-500 text-white text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md font-bold shadow-sm ring-1 ring-white/30">2 Baru</span>
-                                </div>
-                                <button @click="isNotificationOpen = false" type="button" class="rounded-full p-2.5 text-slate-400 bg-white/50 hover:bg-white hover:text-red-600 hover:rotate-90 hover:shadow-md transition-all duration-300 focus:outline-none ring-1 ring-white/50">
-                                    <span class="sr-only">Close panel</span>
-                                    <i class="ph-bold ph-x text-xl"></i>
-                                </button>
-                            </div>
-
-                            <!-- Sidebar Content -->
-                            <div class="flex-1 px-4 py-6 sm:px-6 relative z-10">
-                                <!-- Notification List -->
-                                <ul role="list" class="space-y-4">
-                                    <!-- Unread Notification 1 -->
-                                    <li class="relative p-5 rounded-2xl bg-gradient-to-br from-white/90 to-white/50 backdrop-blur-md border border-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
-                                        <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300"></div>
-                                        <div class="flex space-x-4 relative z-10">
-                                            <div class="flex-shrink-0">
-                                                <div class="h-12 w-12 rounded-xl bg-white/80 backdrop-blur-sm flex items-center justify-center border border-white shadow-sm group-hover:scale-110 group-hover:rotate-6 group-hover:bg-red-500 group-hover:border-red-500 group-hover:text-white group-hover:shadow-red-500/30 text-red-500 transition-all duration-300">
-                                                    <i class="ph-fill ph-ticket text-2xl"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex justify-between items-start mb-1">
-                                                    <p class="text-sm font-bold text-slate-900 group-hover:text-red-700 transition-colors">Cashback s/d 1 Juta! 💸</p>
-                                                    <div class="relative flex h-3 w-3 mt-1">
-                                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]"></span>
-                                                    </div>
-                                                </div>
-                                                <p class="text-sm text-slate-600 leading-relaxed mt-1">Promo gajian khusus buat kamu, tukar tambah sekarang sebelum kehabisan!</p>
-                                                <p class="text-xs text-red-500/80 mt-3 font-semibold flex items-center"><i class="ph-fill ph-clock mr-1"></i> Baru saja</p>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <!-- Unread Notification 2 -->
-                                    <li class="relative p-5 rounded-2xl bg-gradient-to-br from-white/90 to-white/50 backdrop-blur-md border border-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
-                                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300"></div>
-                                        <div class="flex space-x-4 relative z-10">
-                                            <div class="flex-shrink-0">
-                                                <div class="h-12 w-12 rounded-xl bg-white/80 backdrop-blur-sm flex items-center justify-center border border-white shadow-sm group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-blue-500 group-hover:border-blue-500 group-hover:text-white group-hover:shadow-blue-500/30 text-blue-500 transition-all duration-300">
-                                                    <i class="ph-fill ph-package text-2xl"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex justify-between items-start mb-1">
-                                                    <p class="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors">Pesanan Dikirim 🚚</p>
-                                                    <div class="relative flex h-3 w-3 mt-1">
-                                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                                        <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"></span>
-                                                    </div>
-                                                </div>
-                                                <p class="text-sm text-slate-600 leading-relaxed mt-1">Hore! Pesanan iPhone 15 Pro Max kamu sedang dalam perjalanan ke alamatmu.</p>
-                                                <p class="text-xs text-blue-500/80 mt-3 font-semibold flex items-center"><i class="ph-fill ph-clock mr-1"></i> 2 jam yang lalu</p>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <div class="py-4 flex items-center text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">
-                                        <div class="h-px bg-slate-300/40 flex-1"></div>
-                                        <span class="px-4">Telah Dibaca</span>
-                                        <div class="h-px bg-slate-300/40 flex-1"></div>
-                                    </div>
-
-                                    <!-- Read Notification 1 -->
-                                    <li class="relative p-5 rounded-2xl bg-white/40 backdrop-blur-sm border border-white/60 hover:bg-white/80 hover:border-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
-                                        <div class="flex space-x-4 opacity-60 group-hover:opacity-100 transition-opacity">
-                                            <div class="flex-shrink-0">
-                                                <div class="h-12 w-12 rounded-xl bg-slate-100/80 backdrop-blur-sm flex items-center justify-center border border-white text-slate-400 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 group-hover:shadow-emerald-500/30 group-hover:scale-110 transition-all duration-300">
-                                                    <i class="ph-fill ph-check-circle text-2xl"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-bold text-slate-700 group-hover:text-emerald-700 transition-colors">Pembayaran Berhasil</p>
-                                                <p class="text-sm text-slate-500 mt-1 leading-relaxed">Pembayaran pesanan #INV-20260704 telah kami terima dan sedang diproses.</p>
-                                                <p class="text-xs text-slate-400 mt-3 font-medium flex items-center"><i class="ph-fill ph-calendar mr-1 text-slate-300"></i> Kemarin, 14:30</p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            
-                            <!-- Sidebar Footer (Sticky) -->
-                            <div class="p-6 border-t border-white/60 bg-white/40 backdrop-blur-2xl sticky bottom-0 z-20 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)]">
-                                <button class="w-full py-3.5 bg-slate-900/90 hover:bg-slate-900 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-slate-900/20 hover:shadow-slate-900/40 hover:-translate-y-0.5 flex items-center justify-center space-x-2 ring-1 ring-white/20 backdrop-blur-md">
-                                    <i class="ph-bold ph-checks text-lg"></i>
-                                    <span>Tandai Semua Sudah Dibaca</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
