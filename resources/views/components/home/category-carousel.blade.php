@@ -43,18 +43,18 @@
             this.activePageIndex = page;
         }
     }"
-    class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 pb-20 md:pb-6 relative"
+    class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-4 pb-4 relative"
 >
     <!-- Header: Title + Top-Right Link -->
     <div class="flex items-center justify-between mb-3 sm:mb-5">
-        <div class="flex items-center space-x-1.5 sm:space-x-2">
+        <div class="flex items-center justify-between space-x-1.5 sm:space-x-2">
             <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600"></span>
             <h2 class="text-[11px] sm:text-base font-extrabold uppercase tracking-wider text-slate-400">Kategori Pilihan Dancell</h2>
-            <a href="#" class="inline-flex items-center text-[11px] sm:text-sm font-extrabold text-red-900 hover:text-red-700 transition-colors group">
-                <span>Lihat Semua</span>
-                <i class="ph-bold ph-arrow-right ml-1 sm:ml-1.5 text-xs group-hover:translate-x-1 transition-transform"></i>
-            </a>
         </div>
+        <a href="#" class="inline-flex items-center text-[11px] sm:text-sm font-extrabold text-red-900 hover:text-red-700 transition-colors group">
+            <span>Lihat Semua</span>
+            <i class="ph-bold ph-arrow-right ml-1 sm:ml-1.5 text-xs group-hover:translate-x-1 transition-transform"></i>
+        </a>
     </div>
 
     <!-- Grab & Scroll Horizontal Category Carousel with Atmospheric Dark Cards (Compact on Mobile) -->

@@ -15,7 +15,7 @@
     </div>
 
     <!-- Mobile Navbar (Eraspace Style) -->
-    <div class="block md:hidden bg-gradient-to-r from-red-700 to-red-900 shadow-md">
+    <div class="block lg:hidden bg-gradient-to-r from-red-700 to-red-900 shadow-md">
         <div class="px-4 py-2.5 flex items-center justify-between gap-3">
             <!-- Search Input Box -->
             <div class="flex-1 relative shadow-xs">
@@ -46,7 +46,7 @@
     </div>
 
     <!-- Main Navbar (Desktop Only) -->
-    <div class="hidden md:block bg-gradient-to-r from-red-700 to-red-900 shadow-md">
+    <div class="hidden lg:block bg-gradient-to-r from-red-700 to-red-900 shadow-md">
         <div class="max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 gap-6">
                 <!-- Logo -->
@@ -178,7 +178,7 @@
     </div>
 
         <!-- Sub-Navbar (Desktop Categories - Sleek Height) -->
-        <div class="border-t border-red-800/80 bg-gradient-to-r from-red-700 to-red-900 hidden md:block">
+        <div class="border-t border-red-800/80 bg-gradient-to-r from-red-700 to-red-900 hidden lg:block">
             <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex space-x-6 h-10 items-center relative">
                     <!-- Mega Menu Wrapper -->
